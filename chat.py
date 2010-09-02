@@ -26,13 +26,14 @@ class Read:
         thread_id = str(threading.current_thread())
         if session_id not in session_pos:
             session_pos[session_id] = 0
-        pos = session_pos[session_id]
-        if pos == len(messages):
+        if session_pos[session_id] == len(messages):
             thread_lock[thread_id] = threading.Event()
             thread_lock[thread_id].clear()
             thread_lock[thread_id].wait()
-        yield messages[pos] + '\n'
-        session_pos[session_id] += 1
+        while session_pos[session_id] < len(messages):
+            msg = messages[session_pos[session_id]]
+            yield '<div>%s</div>\n' % msg
+            session_pos[session_id] += 1
 
 class KeepReading:
     def GET(self):
@@ -71,7 +72,7 @@ class Frame:
                 <script type="text/javascript" src="static/jquery.js"></script>
             </head>
             <body>
-                <div id="chat"></div>
+                <div id="chat" style="height: 400px; overflow-x: hidden; overflow: auto;"></div>
                     <input id="text">
                     </input>
                     <input type="button" value="Send" onclick="sendMsg()">
@@ -89,7 +90,7 @@ class Frame:
                             dataType: 'text',
                             type: 'get',
                             success: function(line) {
-                                $('#chat').append('<p>' + line + '</p>');
+                                $('#chat').append(line);
                                 setTimeout('getMsg()', 1000);
                                 }
                         });
