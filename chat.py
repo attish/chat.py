@@ -51,7 +51,6 @@ class KeepReading:
 class Say:
     def POST(self):
         line = webpy.input()['l']
-        print 'Line: %s' % line
         messages.append(line)
         for thread in thread_lock:
             thread_lock[thread].set()
@@ -74,15 +73,20 @@ class Frame:
             </head>
             <body>
                 <div id="chat" style="height: 400px; overflow-x: hidden; overflow: auto;"></div>
-                    <input id="text">
-                    </input>
-                    <input type="button" value="Send" onclick="sendMsg()">
-                    </input>
-                </form>
+                <input id="text">
+                </input>
+                <input type="button" value="Send" onclick="sendMsg()">
+                </input>
                 <script type="text/javascript">
+                    $('#text').keypress(function(event) {
+                        if (event.keyCode == '13')
+                            sendMsg();
+                    });
                     function sendMsg() {
-                        var msg = $('#text').val();
+                        var text = $('#text');
+                        var msg = text.val();
                         $.post('/say', {'l': msg});
+                        text.val('');
                     }
 
                     function getMsg() {
