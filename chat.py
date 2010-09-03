@@ -14,13 +14,13 @@ thread_lock = {}
 session_pos = {}
 
 urls = (
-    '/([0-9]+)', 'Read',
-    '/', 'KeepReading',
+    '/', 'Frame',
+    '/longpoll/([0-9]+)', 'LongPoll',
+    '/readall', 'ReadAll',
     '/say', 'Say',
-    '/chat', 'Frame',
     )
 
-class Read:
+class LongPoll:
     def GET(self, session_id):
         webpy.header('Content-type', 'text/html')
         thread_id = str(threading.current_thread())
@@ -35,7 +35,7 @@ class Read:
             yield '<div>%s</div>\n' % msg
             session_pos[session_id] += 1
 
-class KeepReading:
+class ReadAll:
     def GET(self):
         webpy.header('Content-type', 'text/html')
         thread_id = str(threading.current_thread())
@@ -85,13 +85,13 @@ class Frame:
                     function sendMsg() {
                         var text = $('#text');
                         var msg = text.val();
-                        $.post('/say', {'l': msg});
+                        $.post('/send', {'l': msg});
                         text.val('');
                     }
 
                     function getMsg() {
                         $.ajax({
-                            url: '/%d',
+                            url: '/longpoll/%d',
                             dataType: 'text',
                             type: 'get',
                             success: function(line) {
