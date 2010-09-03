@@ -49,8 +49,9 @@ class KeepReading:
             pos += 1
 
 class Say:
-    def GET(self):
+    def POST(self):
         line = webpy.input()['l']
+        print 'Line: %s' % line
         messages.append(line)
         for thread in thread_lock:
             thread_lock[thread].set()
@@ -81,7 +82,7 @@ class Frame:
                 <script type="text/javascript">
                     function sendMsg() {
                         var msg = $('#text').val();
-                        $.get('/say?l=' + escape(msg));
+                        $.post('/say', {'l': msg});
                     }
 
                     function getMsg() {
