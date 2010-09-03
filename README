@@ -1,0 +1,9 @@
+chat.py
+-------
+
+chat.py is a bare minimum chat server built on web.py. It uses AJAX to post
+messages, and the new messages are pushed to the clients via the "longpoll"
+variant of Reverse AJAX.
+
+This program was created as an experiment, but may also be used as a tutorial.
+It is available under the GPL, see COPYING.
