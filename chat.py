@@ -19,6 +19,7 @@ urls = (
     '/longpoll/([0-9]+)', 'LongPoll',
     '/readall', 'ReadAll',
     '/send', 'Say',
+    '/stop', 'Stop',
     )
 
 class LongPoll:
@@ -52,12 +53,14 @@ class ReadAll:
 class Say:
     def POST(self):
         line = webpy.input()['l']
-        if line == "/quit":
-            os._exit(0)
         messages.append(line)
         for thread in thread_lock:
             thread_lock[thread].set()
         return "Line '%s' accepted." % line
+
+class Stop:
+    def GET(self):
+        os._exit(0)
 
 class Frame:
     def GET(self):
@@ -79,6 +82,7 @@ class Frame:
                 <input id="text">
                 </input>
                 <input type="button" value="Send" onclick="sendMsg()">
+                <input type="button" value="Stop" onclick="stop()">
                 </input>
                 <script type="text/javascript">
                     $('#text').keypress(function(event) {
@@ -91,6 +95,12 @@ class Frame:
                         $.post('/send', {'l': msg});
                         text.val('');
                     }
+
+                    function stop() {
+                        $.ajax({url: '/stop'});
+                        $('#chat').append('&nbsp;&nbsp;&nbsp;&nbsp;*** Stop. You may close the window. ***');
+                    }
+
 
                     function getMsg() {
                         $.ajax({
