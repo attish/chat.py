@@ -17,7 +17,7 @@ urls = (
     '/', 'Frame',
     '/longpoll/([0-9]+)', 'LongPoll',
     '/readall', 'ReadAll',
-    '/say', 'Say',
+    '/send', 'Say',
     )
 
 class LongPoll:
