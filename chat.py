@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import web as webpy
+import os
 import threading
 import time
 import datetime
@@ -51,6 +52,8 @@ class ReadAll:
 class Say:
     def POST(self):
         line = webpy.input()['l']
+        if line == "/quit":
+            os._exit(0)
         messages.append(line)
         for thread in thread_lock:
             thread_lock[thread].set()
